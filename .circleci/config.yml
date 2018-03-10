@@ -5,7 +5,7 @@ jobs:
       - image: docker:latest
     steps:
       - checkout
-      - setup_remote_docker
+      # - setup_remote_docker
       - run: |
           TAG=$(git describe --tags).$CIRCLE_BUILD_NUM
           docker login -u $DOCKER_USER -p $DOCKER_PASS
