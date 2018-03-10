@@ -1,0 +1,21 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: docker:latest
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: |
+          TAG=$(git describe --tags).$CIRCLE_BUILD_NUM
+          docker login -u $DOCKER_USER -p $DOCKER_PASS
+          docker build -t nshazly/fortune:latest -t nshazly/fortune:$(git describe --tags --abbrev=0) -t nshazly/fortune:$TAG .
+          docker push nshazly/fortune
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      filters:
+        branches:
+          only: circlci-setup
