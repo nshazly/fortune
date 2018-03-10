@@ -1,7 +1,11 @@
-FROM ubuntu:latest
+FROM ubuntu:bionic
 
-RUN apt-get update ; apt-get -y install fortune
-ADD fortuneloop.sh /bin/fortuneloop.sh
+RUN apt-get update ; apt-get -y install fortune perl
 
-ENTRYPOINT /bin/fortuneloop.sh
+WORKDIR /app
+
+ADD fortuneloop.sh .
+ADD template.html .
+
+ENTRYPOINT /app/fortuneloop.sh
 
