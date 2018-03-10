@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: docker:latest
+      - image: circleci/python:latest
     steps:
       - checkout
       # - setup_remote_docker
