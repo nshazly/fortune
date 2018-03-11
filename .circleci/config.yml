@@ -5,8 +5,8 @@ jobs:
       - image: buildpack-deps:trusty
     steps:
       - checkout
-      - setup_remote_docker
-        version: 17.05.0-ce-git
+      - setup_remote_docker:
+          version: 17.05.0-ce-git
       - run: |
           export TAG=$(git describe --tags --abbrev=0)
           BUILD_TAG=$TAG.$CIRCLE_BUILD_NUM
