@@ -1,18 +1,14 @@
 version: 2
 jobs:
   build:
-    # docker:
-    #   - image: buildpack-deps:trusty
     machine: true
     steps:
       - checkout
-      # - setup_remote_docker:
-      #     version: 17.05.0-ce-git
       - run: 
           name: Build and Push Docker Image
           command: |
             export TAG=$(git describe --tags --abbrev=0)
-            BUILD_TAG=$TAG.$CIRCLE_BUILD_NUM
+            BUILD_TAG=$TAG-$(date +"%s")-$(git rev-parse --short HEAD)-build-$CIRCLE_BUILD_NUM
             docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker build -t nshazly/fortune:latest -t nshazly/fortune:$TAG -t nshazly/fortune:$BUILD_TAG .
             docker push nshazly/fortune
