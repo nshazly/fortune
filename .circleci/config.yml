@@ -5,9 +5,10 @@ jobs:
       - image: buildpack-deps:trusty
     steps:
       - checkout
-      - run: export TAG=$(git describe --tags --abbrev=0)
       - setup_remote_docker
+        version: 17.05.0-ce-git
       - run: |
+          export TAG=$(git describe --tags --abbrev=0)
           BUILD_TAG=$TAG.$CIRCLE_BUILD_NUM
           docker login -u $DOCKER_USER -p $DOCKER_PASS
           docker build -t nshazly/fortune:latest -t nshazly/fortune:$TAG -t nshazly/fortune:$BUILD_TAG .
