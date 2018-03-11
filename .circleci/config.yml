@@ -15,5 +15,5 @@ jobs:
     branches:
       only: circleci-setup
     tags:
-      only: '^v.*'
+      only: /^v.*/
         
