@@ -8,12 +8,11 @@ jobs:
           name: Build and Push Docker Image
           command: |
             export TAG=$(git describe --tags --abbrev=0)
-            BUILD_TAG=$TAG-$(date +"%s")-$(git rev-parse --short HEAD)-build-$CIRCLE_BUILD_NUM
             docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker build -t nshazly/fortune:latest -t nshazly/fortune:$TAG -t nshazly/fortune:$BUILD_TAG .
+            docker build -t nshazly/fortune:latest -t nshazly/fortune:$TAG .
             docker push nshazly/fortune
     branches:
-      only: circleci-setup
+      only: master
     tags:
       only: /^v.*/
         
