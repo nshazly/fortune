@@ -1,0 +1,19 @@
+version: 2
+jobs:
+  build:
+    docker: 
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: 
+          name: Build and Push Docker Image
+          command: |
+            export TAG=$(git describe --tags --abbrev=0)
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker build -t nshazly/fortune:latest -t nshazly/fortune:$TAG .
+            docker push nshazly/fortune
+    branches:
+      only: circleci-remote-docker-workflow
+    # tags:
+    #   only: /^v.*/
+        

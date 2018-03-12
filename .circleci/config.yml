@@ -57,14 +57,14 @@ workflows:
           filters:
             branches:
               only: circleci-remote-docker-workflow
-            # tags:
-            #   only: /^v.*/
+            tags:
+              only: /^v.*/
       - deploy:
           requires:
             - build
           filters:
             branches:
               only: circleci-remote-docker-workflow
-            # tags:
-            #   only: /^v.*/
+            tags:
+              only: /^v.*/
         
