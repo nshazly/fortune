@@ -3,7 +3,7 @@ jobs:
   build:
     docker:
       - image: docker:17-git
-      working_directory: /workspace
+    working_directory: /workspace
     steps:
       - checkout
       - run: 
