@@ -34,11 +34,11 @@ jobs:
   deploy:
     <<: *docker-container-config
     steps:
-      - setup_remote_docker
-      <<: *docker-login
       - restore_cache:
           leys:
             - v1-docker-cache-key-(( .Revision ))
+      - setup_remote_docker
+      <<: *docker-login
       - run:
         name: Push Docker Image
           command: |
@@ -47,7 +47,7 @@ jobs:
 
 workflows:
   version: 2
-  build_only:
+  build_and_deploy:
     jobs:
       build:
         filters:
