@@ -35,7 +35,7 @@ jobs:
     <<: *docker-container-config
     steps:
       - restore_cache:
-          leys:
+          keys:
             - v1-docker-cache-key-(( .Revision ))
       - setup_remote_docker
       <<: *docker-login
