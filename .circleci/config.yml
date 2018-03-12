@@ -38,9 +38,12 @@ jobs:
           keys:
             - v1-docker-cache-key-(( .Revision ))
       - setup_remote_docker
-      <<: *docker-login
+      - *docker-login
       - run:
-        name: Push Docker Image
+          name: Login to Docker
+          command: docker login -u $DOCKER_USER -p $DOCKER_PASS  
+      - run:
+          name: Push Docker Image
           command: |
             docker load < docker-cache/built-image.tar
             docker tag $USERNAME/$APP_NAME:latest $USERNAME/$APP_NAME
