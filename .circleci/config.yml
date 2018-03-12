@@ -43,6 +43,7 @@ jobs:
           name: Push Docker Image
           command: |
             docker load < docker-cache/built-image.tar
+            docker tag $USERNAME/$APP_NAME $USERNAME/$APP_NAME:latest
             docker images
             # docker push $USERNAME/$APP_NAME
 
