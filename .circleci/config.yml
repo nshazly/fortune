@@ -36,7 +36,7 @@ jobs:
     steps:
       - restore_cache:
           keys:
-            - v1-docker-cache-key-(( .Revision ))
+            - v1-docker-cache-key-{{ .Revision }}
       - setup_remote_docker
       - *docker-login
       - run:
