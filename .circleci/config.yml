@@ -30,7 +30,7 @@ jobs:
           key: v1-docker-cache-key-{{ .Revision }}
           paths:
             - docker-cache
-  # step is not need, just an example for workflows
+  # step is not required, its an example for workflows
   deploy:
     <<: *docker-container-config
     steps:
