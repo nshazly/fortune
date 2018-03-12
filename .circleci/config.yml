@@ -23,9 +23,9 @@ jobs:
           name: Build Docker Image
           command: |
             export TAG=$(git describe --tags --abbrev=0)
-            docker build -t $USERNAME/$APP_NAME:$TAG .
+            docker build -t $USERNAME:APP_NAME:latest -t $USERNAME/$APP_NAME:$TAG .
             mkdir -p docker-cache
-            docker save -o docker-cache/built-image.tar $APP_NAME:$TAG
+            docker save -o docker-cache/built-image.tar $APP_NAME
       - save_cache:
           key: v1-docker-cache-key-{{ .Revision }}
           paths:
@@ -39,19 +39,14 @@ jobs:
             - v1-docker-cache-key-(( .Revision ))
       - setup_remote_docker
       - *docker-login
-      # - run:
-      #     name: Login to Docker
-      #     command: docker login -u $DOCKER_USER -p $DOCKER_PASS  
       - run:
           name: Push Docker Image
           command: |
             docker load < docker-cache/built-image.tar
-            docker tag $USERNAME/$APP_NAME:latest $USERNAME/$APP_NAME
+            docker push $USERNAME/$APP_NAME
 
 workflows:
   version: 2
-
-
   build_and_deploy:
     jobs:
       - build:
