@@ -64,6 +64,6 @@ workflows:
         filters:
           branches:
             only: circleci-remote-docker-workflow
-          tags:
-            only: /^v.*/
+          # tags:
+          #   only: /^v.*/
         
