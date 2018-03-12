@@ -1,7 +1,7 @@
 version: 2
 jobs:
   build:
-    machine: true
+    docker: docker:17-git
     steps:
       - checkout
       - run: 
@@ -10,9 +10,10 @@ jobs:
             export TAG=$(git describe --tags --abbrev=0)
             docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker build -t nshazly/fortune:latest -t nshazly/fortune:$TAG .
-            docker push nshazly/fortune
+            # docker push nshazly/fortune
+            echo "complete"
     branches:
-      only: master
-    tags:
-      only: /^v.*/
+      only: circleci-remote-docker-workflow
+    # tags:
+    #   only: /^v.*/
         
