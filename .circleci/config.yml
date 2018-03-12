@@ -25,7 +25,7 @@ jobs:
             export TAG=$(git describe --tags --abbrev=0)
             docker build -t $USERNAME/$APP_NAME:latest -t $USERNAME/$APP_NAME:$TAG .
             mkdir -p docker-cache
-            docker save -o docker-cache/built-image.tar $APP_NAME:$TAG
+            docker save -o docker-cache/built-image.tar $USERNAME/$APP_NAME:$TAG
       - save_cache:
           key: v1-docker-cache-key-{{ .Revision }}
           paths:
