@@ -33,20 +33,21 @@ jobs:
   # step is not need, just an example for workflows
   deploy:
     <<: *docker-container-config
-    - setup_remote_docker
-    <<: *docker-login
-    - restore_cache:
-        leys:
-          - v1-docker-cache-key-(( .Revision ))
-    - run:
-      name: Push Docker Image
-        command: |
-          docker load < docker-cache/built-image.tar
-          docker tag $USERNAME/$APP_NAME:latest $USERNAME/$APP_NAME
+    steps:
+      - setup_remote_docker
+      <<: *docker-login
+      - restore_cache:
+          leys:
+            - v1-docker-cache-key-(( .Revision ))
+      - run:
+        name: Push Docker Image
+          command: |
+            docker load < docker-cache/built-image.tar
+            docker tag $USERNAME/$APP_NAME:latest $USERNAME/$APP_NAME
 
 workflows:
   version: 2
-    build:
+    build_only:
       jobs:
         build:
           filters:
