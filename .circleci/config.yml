@@ -1,22 +1,65 @@
+# .circleci/config.yml
+docker-container-config: &docker-container-config
+  docker:
+    - image: docker:17-git
+  environment:
+    - USERNAME: nshazly
+    - APP_NAME: fortune
+  working_directory: /workspace
+
+docker-login: &docker-login
+  - run:
+      name: Login to Docker
+      command: docker login -u $DOCKER_USER -p $DOCKER_PASS  
+
 version: 2
 jobs:
   build:
-    docker:
-      - image: docker:17-git
-    working_directory: /workspace
+    <<: *docker-container-config
     steps:
       - checkout
       - setup_remote_docker
       - run: 
-          name: Build and Push Docker Image
+          name: Build Docker Image
           command: |
             export TAG=$(git describe --tags --abbrev=0)
-            docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker build -t nshazly/fortune:latest -t nshazly/fortune:$TAG .
-            # docker push nshazly/fortune
-            echo "complete"
-    branches:
-      only: circleci-remote-docker-workflow
-    # tags:
-    #   only: /^v.*/
+            docker build -t $USERNAME/$APP_NAME:$TAG .
+            mkdir -p docker-cache
+            docker save -o docker-cache/built-image.tar $APP_NAME:$TAG
+      - save_cache:
+          key: v1-docker-cache-key-{{ .Revision }}
+          paths:
+            - docker-cache
+  # step is not need, just an example for workflows
+  deploy:
+    <<: *docker-container-config
+    - setup_remote_docker
+    <<: *docker-login
+    - restore_cache:
+        leys:
+          - v1-docker-cache-key-(( .Revision ))
+    - run:
+      name: Push Docker Image
+        command: |
+          docker load < docker-cache/built-image.tar
+          docker tag $USERNAME/$APP_NAME:latest $USERNAME/$APP_NAME
+
+workflows:
+  version: 2
+    build:
+      jobs:
+        build:
+          filters:
+            branches:
+              only: circleci-remote-docker-workflow
+            # tags:
+            #   only: /^v.*/
+        deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: circleci-remote-docker-workflow
+            tags:
+              only: /^v.*/
         
