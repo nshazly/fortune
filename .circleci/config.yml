@@ -5,6 +5,7 @@ docker-container-config: &docker-container-config
   environment:
     - USERNAME: nshazly
     - APP_NAME: fortune
+    - CACHE_FILE: built-image.tar
   working_directory: /workspace
 
 docker-login: &docker-login
@@ -23,11 +24,13 @@ jobs:
           name: Build Docker Image
           command: |
             export TAG=$(git describe --tags --abbrev=0)
-            docker build -t $USERNAME/$APP_NAME:latest -t $USERNAME/$APP_NAME:$TAG .
+            docker build -t$USERNAME/$APP_NAME:latest -t $USERNAME/$APP_NAME:$TAG .
             mkdir -p docker-cache
-            docker save -o docker-cache/built-image.tar $USERNAME/$APP_NAME:$TAG
+            docker save -o docker-cache/$CACHE_FILE $USERNAME/$APP_NAME:$TAG
+            docker save -o docker-cache/latest-$CACHE_FILE $USERNAME/$APP_NAME:latest
       - save_cache:
-          key: v1-docker-cache-key-{{ .Revision }}
+          keys: 
+            - v1-docker-cache-key-{{ .Branch }}-{{ .Revision }}
           paths:
             - docker-cache
   # step is not required, its an example for workflows
@@ -42,7 +45,7 @@ jobs:
       - run:
           name: Push Docker Image
           command: |
-            docker load < docker-cache/built-image.tar
+            [[ -e docker-cache/$CACHE_FILE ]] && for i in $(ls docker-cache); do docker load < docker-cache/$i; done || echo "/docker-cache/$CACHE_FILE does not exist"
             docker tag $USERNAME/$APP_NAME $USERNAME/$APP_NAME:latest
             docker images
             # docker push $USERNAME/$APP_NAME
